@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.benasher44:uuid-jvm:0.0.7@jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.benasher44/uuid-jvm/0.0.7/208de8dbbaa3392a3b3dac5dad317ca4ec8646a9/uuid-jvm-0.0.7.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.benasher44/uuid-jvm/0.0.7/f3625637c33486ab502dd50eee5840105ca2939a/uuid-jvm-0.0.7-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.benasher44/uuid-jvm/0.0.7/568c92d78c1a157aaf9cc28b35fe9dc358ed9c44/uuid-jvm-0.0.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

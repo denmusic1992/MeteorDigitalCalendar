@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: org.jetbrains.kotlin:kotlin-serialization:1.3.61@jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-serialization/1.3.61/8c59ddfb212929e022a14db4a9eb1b24ff13cf05/kotlin-serialization-1.3.61.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-serialization/1.3.61/9d12ca40220cd6119b9c91c6573390a13685f69b/kotlin-serialization-1.3.61-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-serialization/1.3.61/a61a289d1af87977e35eb36ff31add85937ccaeb/kotlin-serialization-1.3.61-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

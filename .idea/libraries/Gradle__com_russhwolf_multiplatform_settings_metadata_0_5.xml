@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.russhwolf:multiplatform-settings-metadata:0.5" type="kotlin.common">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.russhwolf/multiplatform-settings-metadata/0.5/b3078f3e99b306028ab42ba4fd9170611977037b/multiplatform-settings-metadata-0.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.russhwolf/multiplatform-settings-metadata/0.5/6f63463e61533481b74132f3a8672d8a2a65e73a/multiplatform-settings-metadata-0.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

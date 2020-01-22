@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.jetbrains.kotlinx:kotlinx-io-iosx64:klib:0.1.16" type="kotlin.native">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-io-iosx64/0.1.16/dafe6011ea63ea7200a43bcff435a46204a1b1b8/kotlinx-io.klib!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-io-iosx64/0.1.16/a1d571e1826ac4fdea57b0939be708c4a13475b1/kotlinx-io-iosx64-0.1.16-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

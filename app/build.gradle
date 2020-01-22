@@ -1,0 +1,139 @@
+plugins {
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'com.android.application'
+    id 'kotlin-android-extensions'
+    id 'kotlinx-serialization'
+}
+repositories {
+    google()
+    jcenter()
+    mavenCentral()
+}
+
+
+android {
+    compileSdkVersion 29
+    defaultConfig {
+        applicationId 'org.jetbrains.kotlin.mpp_app_android'
+        minSdkVersion 16
+        targetSdkVersion 29
+        versionCode 1
+        versionName '1.0'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/common.kotlin_module'
+        exclude 'META-INF/*.kotlin_module'
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    implementation "org.jetbrains.kotlin:kotlin-serialization:$kotlinVer"
+}
+
+kotlin {
+    android("android")
+    // This is for iPhone emulator
+    // Switch here to iosArm64 (or iosArm32) to build library for iPhone device
+    iosX64("ios") {
+        binaries {
+            framework()
+        }
+    }
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation kotlin('stdlib-common')
+                // ktor
+                implementation("io.ktor:ktor-client-core:$rootProject.ktorVer")
+                implementation("io.ktor:ktor-client-logging:$rootProject.ktorVer")
+                implementation("io.ktor:ktor-client-json:$rootProject.ktorVer")
+                implementation("io.ktor:ktor-client-serialization:$rootProject.ktorVer")
+                // coroutines
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$rootProject.coroutinesVer")
+                // serialization
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$rootProject.kotlinSerializationVer")
+                // key-value
+                implementation("com.russhwolf:multiplatform-settings:$rootProject.kotlinSharedVer")
+                // uuid
+                implementation("com.benasher44:uuid:$rootProject.uuidVer")
+                // md5
+                implementation("com.soywiz.korlibs.krypto:krypto:$rootProject.kryptoVer")
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation kotlin('test-common')
+                implementation kotlin('test-annotations-common')
+            }
+        }
+        androidMain {
+            dependencies {
+                implementation kotlin('stdlib')
+                // ktor
+                implementation("io.ktor:ktor-client-android:$rootProject.ktorVer")
+                implementation("io.ktor:ktor-client-serialization-jvm:$rootProject.ktorVer")
+                implementation("io.ktor:ktor-client-json-jvm:$rootProject.ktorVer")
+                implementation("io.ktor:ktor-client-logging-jvm:$rootProject.ktorVer")
+                // coroutines
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutinesVer")
+                // serialization
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$rootProject.kotlinSerializationVer")
+            }
+        }
+        androidTest {
+            dependencies {
+                implementation kotlin('test')
+                implementation kotlin('test-junit')
+            }
+        }
+        iosMain {
+            dependencies {
+                // ktor
+                implementation("io.ktor:ktor-client-ios:$rootProject.ktorVer")
+                implementation("io.ktor:ktor-client-serialization-native:$rootProject.ktorVer")
+                implementation("io.ktor:ktor-client-json-native:$rootProject.ktorVer")
+                implementation("io.ktor:ktor-client-logging-native:$rootProject.ktorVer")
+                // coroutines
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$rootProject.coroutinesVer")
+                // serialization
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$rootProject.kotlinSerializationVer")
+            }
+        }
+        iosTest {
+        }
+    }
+}
+
+// This task attaches native framework built from ios module to Xcode project
+// (see iosApp directory). Don't run this task directly,
+// Xcode runs this task itself during its build process.
+// Before opening the project from iosApp directory in Xcode,
+// make sure all Gradle infrastructure exists (gradle.wrapper, gradlew).
+task copyFramework {
+    def buildType = project.findProperty('kotlin.build.type') ?: 'DEBUG'
+    def target = project.findProperty('kotlin.target') ?: 'ios'
+    dependsOn kotlin.targets."$target".binaries.getFramework(buildType).linkTask
+
+    doLast {
+        def srcFile = kotlin.targets."$target".binaries.getFramework(buildType).outputFile
+        def targetDir = getProperty('configuration.build.dir')
+        copy {
+            from srcFile.parent
+            into targetDir
+            include 'app.framework/**'
+            include 'app.framework.dSYM'
+        }
+    }
+}

@@ -1,0 +1,18 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://dl.bintray.com/florent37/maven" }
+        maven { url "https://bintray.com/korlibs/korlibs/krypto" }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVer"
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinVer"
+    }
+}
+repositories {
+    google()
+    jcenter()
+    mavenCentral()
+}

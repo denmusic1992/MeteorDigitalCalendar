@@ -1,0 +1,5 @@
+rootProject.name = 'Meteor Digital Calendar'
+
+include ':app'
+
+enableFeaturePreview('GRADLE_METADATA')
