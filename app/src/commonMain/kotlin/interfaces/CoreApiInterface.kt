@@ -10,7 +10,7 @@ import models.User
 /**
  * Интерфейс взаимодействия с серверной частью
  */
-interface ApiCoreInterface {
+interface CoreApiInterface {
 
     /**
      * Метод POST регистрации устройства по UUID

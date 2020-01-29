@@ -4,6 +4,8 @@ plugins {
     id 'kotlin-android-extensions'
     id 'kotlinx-serialization'
 }
+
+
 repositories {
     google()
     jcenter()
@@ -70,6 +72,8 @@ kotlin {
                 implementation("com.benasher44:uuid:$rootProject.uuidVer")
                 // md5
                 implementation("com.soywiz.korlibs.krypto:krypto:$rootProject.kryptoVer")
+                // time
+                implementation("com.soywiz.korlibs.klock:klock:$rootProject.klockVer")
             }
         }
         commonTest {

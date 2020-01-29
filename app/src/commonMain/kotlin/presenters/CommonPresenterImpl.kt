@@ -1,6 +1,8 @@
 package presenters
 
 import com.russhwolf.settings.Settings
+import com.soywiz.klock.DateTime
+import com.soywiz.klock.days
 import enums.ClientType
 import enums.ResponseCode
 import helpers.Storage
@@ -11,7 +13,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import network.RequestAPI
+import models.Filter
+import network.CoreRequestAPI
+import network.EventsRequestAPI
 
 /**
  * Презентер для работы с главными функциями приложения
@@ -25,6 +29,31 @@ class CommonPresenterImpl(
     override val job: Job
         get() = Job()
 
+    private var filter: Filter
+
+    /**
+     * инициализация фильтра
+     * TODO: Перенести в отдельный метод, типа clear
+     */
+    init {
+        val dateFrom = Filter.formatDate(DateTime.now() - (DateTime.now().dayOfMonth.days - 1.days))
+        println("dateFrom = $dateFrom")
+        val dateTo =
+            Filter.formatDate(DateTime.now() + (DateTime.now().endOfMonth.dayOfMonth - DateTime.now().dayOfMonth).days)
+        println("dateTo = $dateTo")
+        val currentMonth = DateTime.now().month1
+        println("dateTo = $currentMonth")
+        filter = Filter(
+            dateFrom,
+            dateTo,
+            currentMonth,
+            selectedPrice = "",
+            isFavourite = false,
+            isFree = false,
+            selectedCities = Filter.fillCities()
+        )
+    }
+
     /**
      * Метод регистрации приложения в системе
      */
@@ -34,7 +63,7 @@ class CommonPresenterImpl(
             val deviceID = Storage.getDeviceID(settings)
             // Отправляем запрос на сервер
             launch {
-                val data = RequestAPI.postDeviceID(deviceID, ClientType.Android, settings)
+                val data = CoreRequestAPI.postDeviceID(deviceID, ClientType.Android, settings)
                 // Если получили ответ с сервера, разбираем его
                 // получили отклик
                 if (data != null) {
@@ -74,7 +103,7 @@ class CommonPresenterImpl(
         if (previousUser != null) {
             val deviceID = Storage.getDeviceID(settings)
             launch {
-                val user = RequestAPI.getCurrentUser(deviceID, settings)
+                val user = CoreRequestAPI.getCurrentUser(deviceID, settings)
                 if (user?.data != null && user.data.userId == previousUser.userId) {
                     Storage.setCurrentUser(settings, user.data)
                     withContext(Dispatchers.Main) {
@@ -95,11 +124,33 @@ class CommonPresenterImpl(
     override fun setCategories() {
         val deviceID = Storage.getDeviceID(settings)
         launch {
-            val response = RequestAPI.getCategories(deviceID, settings)
+            val response = EventsRequestAPI.getCategories(deviceID, settings)
             if (response?.data != null) {
                 withContext(Dispatchers.Main) {
+                    // Добавляем теги в фильтр, по умолчанию все выбраны изначально
+                    filter.categories = response.data
                     commonView.categoriesReceived(response.data)
                 }
+            }
+        }
+    }
+
+    override fun setEvents() {
+        val deviceID = Storage.getDeviceID(settings)
+        launch {
+            val eventsData = EventsRequestAPI.getEvents(
+                filter.dateFrom,
+                filter.dateTo,
+                filter.selectedCities,
+                filter.getSelectedCategoryIds(),
+                filter.selectedPrice,
+                // TODO: Это переделать, на сервере
+                if (filter.isFavourite) 1 else 0,
+                deviceID,
+                settings
+            )
+            withContext(Dispatchers.Main) {
+                commonView.eventsReceived(eventsData?.data)
             }
         }
     }

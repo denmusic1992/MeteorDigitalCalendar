@@ -21,4 +21,9 @@ interface CommonPresenter {
      * @return список категорий
      */
     fun setCategories()
+
+    /**
+     * Получить список мероприятий
+     */
+    fun setEvents()
 }

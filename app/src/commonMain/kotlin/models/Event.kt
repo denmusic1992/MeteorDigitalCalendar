@@ -2,6 +2,7 @@ package models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.jvm.Transient
 
 /**
  * Модель, описывающая мероприятие
@@ -25,41 +26,43 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Event(
     @SerialName("EventID")
-    val eventId: Int,
+    val eventId: Int?,
     @SerialName("Title")
-    val title: String,
+    val title: String?,
     @SerialName("Organizer")
-    val organizer: String,
+    val organizer: String?,
     @SerialName("Speakers")
-    val speakers: String,
+    val speakers: String?,
     @SerialName("CityID")
-    val cityID: Int,
+    val cityID: Int?,
     @SerialName("CityTitle")
-    val cityTitle: String,
+    val cityTitle: String?,
     @SerialName("Location")
-    val location: String,
+    val location: String?,
     @SerialName("Address")
-    val address: String,
+    val address: String?,
     @SerialName("DateFrom")
-    val dateFrom: String,
+    val dateFrom: String?,
     @SerialName("DateTo")
-    val dateTo: String,
+    val dateTo: String?,
     @SerialName("URL")
-    val url: String,
+    val url: String?,
     @SerialName("RegistrationURL")
-    val registrationURL: String,
+    val registrationURL: String?,
     @SerialName("ProgramURL")
-    val programURL: String,
+    val programURL: String?,
     @SerialName("PriceFrom")
-    val priceFrom: Int,
+    val priceFrom: Int?,
     @SerialName("PriceTo")
-    val priceTo: Int,
+    val priceTo: Int?,
     @SerialName("Favourite")
-    val favourite: String,
+    val favourite: String?,
     @SerialName("FirstEvent")
-    val isFirstElement: Boolean,
+    @Transient
+    val isFirstElement: Boolean? = false,
     @SerialName("LastEvent")
-    val isLastElement: Boolean,
+    @Transient
+    val isLastElement: Boolean? = false,
     @SerialName("CategoryList")
-    val categoryEvents: ArrayList<CategoryEvent>
+    val categoryEvents: ArrayList<CategoryEvent>?
 )

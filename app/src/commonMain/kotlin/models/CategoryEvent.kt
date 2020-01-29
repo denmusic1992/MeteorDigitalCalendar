@@ -21,5 +21,8 @@ data class CategoryEvent(
     val color: String,
     @SerialName("SortOrder")
     @Transient
-    val order: Int = 0
+    val order: Int = 0,
+    @SerialName("Selected")
+    @Transient
+    val selected: Boolean = true
 )

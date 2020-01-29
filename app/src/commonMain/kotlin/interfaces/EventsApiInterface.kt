@@ -4,8 +4,9 @@ import com.russhwolf.settings.Settings
 import enums.MethodType
 import models.CategoryEvent
 import models.CommonResponse
+import models.Event
 
-interface ApiEventsInterface {
+interface EventsApiInterface {
     /**
      * Метод получения категорий мероприятий
      * @param authDeviceID идентификатор устройства
@@ -22,7 +23,7 @@ interface ApiEventsInterface {
      * Метод получения event
      * @param dateFrom дата начала мероприятий
      * @param dateTo дата окончания мероприятий
-     * @param city город, в котором будут проводиться мероприятия
+     * @param cities город, в котором будут проводиться мероприятия
      * @param categories тэги события
      * @param price цена
      * @param favourite
@@ -30,15 +31,15 @@ interface ApiEventsInterface {
      * @param settings доступ к хранилищу
      * @param methodType Тип метода
      */
-    fun getEvents(
+    suspend fun getEvents(
         dateFrom: String,
         dateTo: String,
-        city: ArrayList<String>,
+        cities: ArrayList<String>,
         categories: ArrayList<Int>,
         price: String,
         favourite: Int,
         deviceID: String,
         settings: Settings,
         methodType: MethodType = MethodType.GET
-    )
+    ): CommonResponse<ArrayList<Event>>?
 }

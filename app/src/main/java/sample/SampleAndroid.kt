@@ -9,6 +9,7 @@ import com.russhwolf.settings.AndroidSettings
 import interfaces.CommonPresenter
 import interfaces.CommonViewInterface
 import models.CategoryEvent
+import models.Event
 import presenters.CommonPresenterImpl
 import sample.utils.MainUtils
 
@@ -38,24 +39,32 @@ class MainActivity : AppCompatActivity(), CommonViewInterface {
     }
 
     override fun registerResult(success: Boolean, message: String?) {
-        MainUtils.shortToast(this,
+        MainUtils.shortToast(
+            this,
             if (success) "Регистрация прошла успешно! " +
                     "\n$message" else message
                 ?: ""
         )
-        if(success)
+        if (success)
             commonPresenter.authorizeUser()
     }
 
     override fun authorizationResult(message: String?) {
-        if(message != null)
+        if (message != null)
             MainUtils.shortToast(this, message)
         commonPresenter.setCategories()
     }
 
     override fun categoriesReceived(categories: ArrayList<CategoryEvent>?) {
-        if(categories != null){
+        if (categories != null) {
             MainUtils.longToast(this, "Категории получены!")
+            commonPresenter.setEvents()
+        }
+    }
+
+    override fun eventsReceived(events: ArrayList<Event>?) {
+        if (events != null) {
+            MainUtils.longToast(this, "События получены!")
         }
     }
 }

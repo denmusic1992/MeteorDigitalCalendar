@@ -7,6 +7,7 @@ import kotlinx.serialization.toUtf8Bytes
 /**
  * Здесь собраны методы для создания хеша, используемого в запросах
  */
+@Suppress("EXPERIMENTAL_API_USAGE")
 object HashEncoder {
     /**
      * Метод добавления подписи для валидного запроса
@@ -14,11 +15,13 @@ object HashEncoder {
      * @param
      * @return аргумент, добавляющийся в конец запроса
      */
-    internal fun addSign(params: Map<String, String>, settings: Settings): String {
+    internal fun addSign(params: ArrayList<Pair<String, Any>>, settings: Settings): String {
         // Здесь, как я понял собираем в правильном формате параметры запроса
         val paramList = arrayListOf<String>()
-        for (entry: Map.Entry<String, String> in params.entries) {
-            paramList.add("${entry.key}=${entry.value}")
+        for (entry in params) {
+            // Для подписи не нужны значения из массива
+            if(!entry.first.contains("[") && !entry.first.contains("%5B"))
+                paramList.add("${entry.first}=${entry.second}")
         }
         val strWithKey = "${implode(params = paramList)}${Storage.getPrivateKey(settings)}"
         val signParam = getMD5Hash(strWithKey)
@@ -45,7 +48,7 @@ object HashEncoder {
      * @param stringToHash строка, по которой нужно получить хеш
      * @return md5 хеш
      */
-    private fun getMD5Hash(stringToHash: String): String {
+    fun getMD5Hash(stringToHash: String): String {
         val md5 = MD5.create()
         md5.update(stringToHash.toUtf8Bytes())
         val messageDigest = md5.digest()
