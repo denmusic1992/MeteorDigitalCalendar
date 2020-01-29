@@ -5,6 +5,7 @@ import enums.ClientType
 import enums.MethodType
 import models.CommonResponse
 import models.Device
+import models.RegistrationCredentials
 import models.User
 
 /**
@@ -36,5 +37,20 @@ interface CoreApiInterface {
         authDeviceID: String,
         settings: Settings,
         methodType: MethodType = MethodType.GET
+    ): CommonResponse<User>?
+
+    /**
+     * Метод регистрации пользователя в приложении
+     * @param deviceID идентификатор устройства
+     * @param credentials данные для регистрации
+     * @param settings доступ к key-value хранилищу
+     * @param methodType тип метода
+     * @return пользовательскую информацию
+     */
+    suspend fun postRegistrationData(
+        deviceID: String,
+        credentials: RegistrationCredentials,
+        settings: Settings,
+        methodType: MethodType = MethodType.POST
     ): CommonResponse<User>?
 }

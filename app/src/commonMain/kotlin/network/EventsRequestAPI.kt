@@ -6,9 +6,7 @@ import interfaces.EventsApiInterface
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.list
-import models.CategoryEvent
-import models.CommonResponse
-import models.Event
+import models.*
 
 /**
  * Класс описывающий логику подключения к методам api из Events
@@ -25,10 +23,6 @@ object EventsRequestAPI : EventsApiInterface {
 
     /**
      * Метод получения типов событий в календаре
-     * @param authDeviceID идентификатор устройства
-     * @param settings доступ к key-value хранилищу
-     * @param methodType тип метода
-     * @return списко категорий CategoryEvent
      */
     override suspend fun getCategories(
         authDeviceID: String,
@@ -50,41 +44,28 @@ object EventsRequestAPI : EventsApiInterface {
 
     /**
      * Метод получения списка событий в соответствии с выбранными параметрами фильтрации
-     * @param dateFrom с какой даты мероприятия
-     * @param dateTo по какую дату мероприятия
-     * @param cities список городов
-     * @param categories теги
-     * @param price цена (категории цен)
-     * @param favourite смотреть только в избранных
-     * @param deviceID идентификатор устройства
-     * @param settings доступ к хранилищу
-     * @param methodType тип метода
-     * @return
      */
     override suspend fun getEvents(
-        dateFrom: String,
-        dateTo: String,
-        cities: ArrayList<String>,
-        categories: ArrayList<Int>,
-        price: String,
-        favourite: Int,
         deviceID: String,
+        filter: Filter,
         settings: Settings,
         methodType: MethodType
     ): CommonResponse<ArrayList<Event>>? {
         // Заполняем переменные для доступа к API
         val params = ArrayList<Pair<String, Any>>()
         params.add(Pair("AuthDeviceID", deviceID))
-        params.add(Pair("DateFrom", dateFrom))
-        params.add(Pair("DateTo", dateTo))
-        for (city in cities) {
+        params.add(Pair("DateFrom", filter.dateFrom))
+        params.add(Pair("DateTo", filter.dateTo))
+        // Добавляем выбранные города
+        for (city in filter.selectedCities) {
             params.add(Pair("CityType[]", city))
         }
-//        for (category in categories) {
-//            params.add(Pair("CategoryID", category))
-//        }
-        params.add(Pair("Favourite", favourite))
-        params.add(Pair("Price", price))
+        // Добавляем выбранные категории
+        for (category in filter.getSelectedCategoryIds()) {
+            params.add(Pair("CategoryID[]", category))
+        }
+        params.add(Pair("Favourite", filter.isFavourite))
+        params.add(Pair("Price", filter.selectedPrice))
 
         // инициализируем сериализатор под наши нужды
         val serializer = KotlinxSerializer(Json.nonstrict).apply {

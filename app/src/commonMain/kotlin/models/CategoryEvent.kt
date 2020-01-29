@@ -24,5 +24,5 @@ data class CategoryEvent(
     val order: Int = 0,
     @SerialName("Selected")
     @Transient
-    val selected: Boolean = true
+    val selected: Boolean = false
 )

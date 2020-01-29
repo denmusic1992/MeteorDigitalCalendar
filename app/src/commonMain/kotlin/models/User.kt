@@ -2,6 +2,7 @@ package models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 /**
  * Модель, описывающая пользователя
@@ -10,31 +11,35 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class User(
     @SerialName("UserID")
-    val userId: String,
+    val userId: String?,
     @SerialName("Email")
-    val email: String,
+    val email: String?,
     @SerialName("Name")
-    val name: String,
+    val name: String?,
     @SerialName("UserImage")
-    val userImage: String,
+    val userImage: String?,
     @SerialName("Phone")
-    val phone: String,
+    val phone: String?,
     @SerialName("Role")
-    val role: String,
+    val role: String?,
     @SerialName("WebsiteID")
-    val websiteId: String,
+    val websiteId: String?,
     @SerialName("Created")
-    val created: String,
+    @Transient
+    val created: String? = null,
     @SerialName("LastLogin")
-    val lastLogin: String,
+    @Transient
+    val lastLogin: String? = null,
     @SerialName("LastIP")
-    val lastIp: String,
+    @Transient
+    val lastIp: String? = null,
     @SerialName("RoleTitle")
-    val roleTitle: String,
+    @Transient
+    val roleTitle: String? = null,
     @SerialName("PushNew")
-    val pushNew: String,
+    val pushNew: String?,
     @SerialName("PushFavourites")
-    val pushFavourites: String
+    val pushFavourites: String?
 ){
     override fun toString(): String {
         return "User profile: $name, $phone, website: $websiteId, last logged: $lastLogin"

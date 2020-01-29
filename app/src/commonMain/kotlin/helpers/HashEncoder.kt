@@ -20,7 +20,7 @@ object HashEncoder {
         val paramList = arrayListOf<String>()
         for (entry in params) {
             // Для подписи не нужны значения из массива
-            if(!entry.first.contains("[") && !entry.first.contains("%5B"))
+            if (!entry.first.contains("[") && !entry.first.contains("%5B"))
                 paramList.add("${entry.first}=${entry.second}")
         }
         val strWithKey = "${implode(params = paramList)}${Storage.getPrivateKey(settings)}"

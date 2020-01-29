@@ -8,18 +8,20 @@ import io.ktor.client.features.json.serializer.KotlinxSerializer
 import kotlinx.serialization.json.Json
 import models.CommonResponse
 import models.Device
+import models.RegistrationCredentials
 import models.User
 
 /**
  * Класс описывающий логику подключения к методам api из Core
  */
 @Suppress("EXPERIMENTAL_API_USAGE")
-object CoreRequestAPI: CoreApiInterface {
+object CoreRequestAPI : CoreApiInterface {
 
     //region url staff
     // Адреса api url
     private const val POST_DEVICE_API = "core/devices"
-    private const val GET_CURRENT_USER_API = "core/users/register"
+    private const val GET_CURRENT_USER_API = "core/users/current"
+    private const val POST_REGISTRATION_DATA = "core/users/register"
 
     //endregion
 
@@ -70,6 +72,42 @@ object CoreRequestAPI: CoreApiInterface {
             // Перечисляем, какие именно варианты у нас могут быть с generic data параметр
             register(CommonResponse.serializer(User.serializer()))
         }
-        return RequestAPI.makeRequest(methodType, settings, GET_CURRENT_USER_API, paramsMap, serializer)
+        return RequestAPI.makeRequest(
+            methodType,
+            settings,
+            GET_CURRENT_USER_API,
+            paramsMap,
+            serializer
+        )
+    }
+
+
+    override suspend fun postRegistrationData(
+        deviceID: String,
+        credentials: RegistrationCredentials,
+        settings: Settings,
+        methodType: MethodType
+    ): CommonResponse<User>? {
+        val params = ArrayList<Pair<String, Any>>()
+        params.add(Pair("AuthDeviceID", deviceID))
+        params.add(Pair("Email", credentials.email))
+        params.add(Pair("Name", credentials.name))
+        params.add(Pair("Password1", credentials.password))
+        params.add(Pair("Password2", credentials.confirmPassword))
+        params.add(Pair("Phone", credentials.phone))
+
+        // инициализируем сериализатор под наши нужды
+        val serializer = KotlinxSerializer(Json.nonstrict).apply {
+            // Перечисляем, какие именно варианты у нас могут быть с generic data параметр
+            register(CommonResponse.serializer(User.serializer()))
+        }
+
+        return RequestAPI.makeRequest(
+            methodType,
+            settings,
+            POST_REGISTRATION_DATA,
+            params,
+            serializer
+        )
     }
 }

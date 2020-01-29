@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Digital Calendar MPP</string>
+    <string name="test_register">Тестовая регистрация</string>
 </resources>
