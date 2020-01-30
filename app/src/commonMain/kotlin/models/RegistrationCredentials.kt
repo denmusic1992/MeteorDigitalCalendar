@@ -46,4 +46,10 @@ data class RegistrationCredentials(
         return name.isNotEmpty()
     }
 
+    /**
+     * Проверка, может ли пользователь логиниться
+     */
+    fun canTryLogin(): Boolean {
+        return isEmailValid() && password.isNotEmpty()
+    }
 }

@@ -18,6 +18,7 @@ object EventsRequestAPI : EventsApiInterface {
     // Адреса api url
     private const val GET_CATEGORIES_API = "calendar/categories"
     private const val GET_EVENTS_API = "calendar/events"
+    private const val PUT_SET_FAVOURITE = "calendar/events/favourites"
 
     //endregion
 
@@ -74,5 +75,21 @@ object EventsRequestAPI : EventsApiInterface {
 //        }
 
         return RequestAPI.makeRequest(methodType, settings, GET_EVENTS_API, params)
+    }
+
+    override suspend fun setFavourite(
+        deviceID: String,
+        eventID: String,
+        favourite: String,
+        settings: Settings,
+        methodType: MethodType
+    ): CommonResponse<Unit>? {
+        // Заполняем переменные для доступа к API
+        val params = ArrayList<Pair<String, Any>>()
+        params.add(Pair("AuthDeviceID", deviceID))
+        params.add(Pair("EventID", eventID))
+        params.add(Pair("Favourite", favourite))
+
+        return RequestAPI.makeRequest(methodType, settings, PUT_SET_FAVOURITE, params)
     }
 }

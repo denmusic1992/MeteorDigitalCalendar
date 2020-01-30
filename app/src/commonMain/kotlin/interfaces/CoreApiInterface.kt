@@ -68,4 +68,19 @@ interface CoreApiInterface {
         settings: Settings,
         methodType: MethodType = MethodType.PUT
     ): CommonResponse<User>?
+
+    /**
+     * Метод сброса паролю по e-mail
+     * @param deviceID идентификатор устройства
+     * @param email e-mail пользователя, куда будет отправлен новый пароль
+     * @param settings доступ к key-value хранилищу
+     * @param methodType тип метода
+     * @return возвращает ключ
+     */
+    suspend fun postEmailResendData(
+        deviceID: String,
+        email: String,
+        settings: Settings,
+        methodType: MethodType = MethodType.POST
+    ): CommonResponse<Device>?
 }

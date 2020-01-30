@@ -1,20 +1,27 @@
 package interfaces
 
-import models.CategoryEvent
-import models.Event
-
 /**
  * Интерфейс для взаимодействия CommonPresenter и View
+ * TODO: Необходимо сделать интерфейсы для взаимодействия с данными моделей
  */
 interface CommonViewInterface {
     /**
      * Результат при получении тегов
-     * @param categories полученные теги с сервера
+     * @param success успех или неудача
+     * @param reason текст ошибки при неудаче
      */
-    fun categoriesReceived(categories: ArrayList<CategoryEvent>?)
+    fun categoriesReceivedResult(success: Boolean, reason: String? = null)
 
     /**
      * Результат при получении мероприятий с сервера
+     * @param success успех или неудача
+     * @param reason текст ошибки при неудаче
      */
-    fun eventsReceived(events: ArrayList<Event>?)
+    fun eventsReceivedResult(success: Boolean, reason: String? = null)
+
+    /**
+     * @param success успех или неудача
+     * @param reason текст ошибки при неудаче
+     */
+    fun favouriteResult(success: Boolean, reason: String? = null)
 }

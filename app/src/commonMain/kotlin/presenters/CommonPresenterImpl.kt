@@ -37,45 +37,89 @@ class CommonPresenterImpl(
 
 
     override fun setCategories() {
-        val deviceID = Storage.getDeviceID(settings)
         launch {
+            val deviceID = Storage.getDeviceID(settings)
+
             val response = EventsRequestAPI.getCategories(deviceID, settings)
-            if(response != null && response.code == ResponseCode.Ok.code) {
+            if (response != null && response.code == ResponseCode.Ok.code) {
                 val categories = response.data as ArrayList<CategoryEvent>?
-                if(categories != null)
+                if (categories != null)
                     withContext(Dispatchers.Main) {
                         // Добавляем теги в фильтр, по умолчанию все выбраны изначально
                         filter.categories = categories
-                        commonView.categoriesReceived(response.data)
+                        commonView.categoriesReceivedResult(true)
                     }
-            }
-            else {
+            } else {
                 withContext(Dispatchers.Main) {
-                    commonView.categoriesReceived(null)
+                    commonView.categoriesReceivedResult(
+                        false,
+                        "Не удалось получить данные по категориям с сервера"
+                    )
                 }
             }
         }
     }
 
     override fun setEvents() {
-        val deviceID = Storage.getDeviceID(settings)
         launch {
+            val deviceID = Storage.getDeviceID(settings)
+
             val eventsData = EventsRequestAPI.getEvents(
                 deviceID,
                 filter,
                 settings
             )
             // Пишем события в переменную
-            if(eventsData != null) {
-                when(eventsData.code) {
+            if (eventsData != null) {
+                when (eventsData.code) {
                     ResponseCode.Ok.code -> {
                         events = eventsData.data as ArrayList<Event>?
-                        commonView.eventsReceived(events)
+                        withContext(Dispatchers.Main) {
+                            commonView.eventsReceivedResult(true)
+                        }
+                    }
+                    else -> {
+                        withContext(Dispatchers.Main) {
+                            commonView.eventsReceivedResult(false, eventsData.errorList.toString())
+                        }
                     }
                 }
             }
             withContext(Dispatchers.Main) {
-                commonView.eventsReceived(null)
+                commonView.eventsReceivedResult(false, "Не удалось получить события с сервера!")
+            }
+        }
+    }
+
+    override fun setFavourite(selectedEvent: Int) {
+        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        launch {
+            val deviceID = Storage.getDeviceID(settings)
+            val event = events?.get(selectedEvent)
+            if(event != null) {
+                val favourite =
+                    EventsRequestAPI.setFavourite(
+                        deviceID,
+                        event.eventId.toString(),
+                        event.getEditedFavourite(),
+                        settings
+                    )
+                when (favourite?.code) {
+                    ResponseCode.Created.code -> {
+                        withContext(Dispatchers.Main) {
+                            event.setFavourite()
+                            commonView.favouriteResult(true)
+                        }
+                    }
+                    else -> {
+                        withContext(Dispatchers.Main) {
+                            commonView.favouriteResult(
+                                false,
+                                "Не удалось добавить в избранное!"
+                            )
+                        }
+                    }
+                }
             }
         }
     }

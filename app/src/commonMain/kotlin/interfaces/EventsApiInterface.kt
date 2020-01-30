@@ -35,4 +35,21 @@ interface EventsApiInterface {
         settings: Settings,
         methodType: MethodType = MethodType.GET
     ): CommonResponse<Array<Event>>?
+
+    /**
+     * Метод, добавляющий событие в избранные
+     * @param deviceID идентификатор устройства
+     * @param eventID номер события
+     * @param favourite является ли избранным
+     * @param settings доступ к хранилищу
+     * @param methodType Тип метода
+     * @return ответ, получилось или нет
+     */
+    suspend fun setFavourite(
+        deviceID: String,
+        eventID: String,
+        favourite: String,
+        settings: Settings,
+        methodType: MethodType = MethodType.PUT
+    ): CommonResponse<Unit>?
 }

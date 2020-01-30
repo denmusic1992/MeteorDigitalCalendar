@@ -56,7 +56,7 @@ data class Event(
     @SerialName("PriceTo")
     val priceTo: Int?,
     @SerialName("Favourite")
-    val favourite: String?,
+    var favourite: String?,
     @SerialName("FirstEvent")
     @Transient
     val isFirstElement: Boolean? = false,
@@ -119,5 +119,19 @@ data class Event(
         result = 31 * result + (isLastElement?.hashCode() ?: 0)
         result = 31 * result + (categoryEvents?.contentHashCode() ?: 0)
         return result
+    }
+
+    /**
+     * Меняет значение избранного на противополложное
+     */
+    fun setFavourite() {
+        favourite = if(favourite.equals("Y")) "N" else "Y"
+    }
+
+    /**
+     * Спрашивает противоположное значение
+     */
+    fun getEditedFavourite(): String {
+        return if(favourite.equals("Y")) "N" else "Y"
     }
 }

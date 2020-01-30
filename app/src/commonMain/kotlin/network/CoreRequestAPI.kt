@@ -20,7 +20,8 @@ object CoreRequestAPI : CoreApiInterface {
     private const val POST_DEVICE_API = "core/devices"
     private const val GET_CURRENT_USER_API = "core/users/current"
     private const val POST_REGISTRATION_DATA = "core/users/register"
-    private const val POST_AUTHORIZATION_DATA = "core/users/login"
+    private const val PUT_AUTHORIZATION_DATA = "core/users/login"
+    private const val POST_EMAIL_RESEND_DATA = "core/users/reset"
 
     //endregion
 
@@ -43,12 +44,6 @@ object CoreRequestAPI : CoreApiInterface {
         paramsMap.add(Pair("AuthDeviceID", authDeviceID))
         paramsMap.add(Pair("Client", client.type))
 
-//        //инициализируем сериализатор под наши нужды
-//        val serializer = KotlinxSerializer(Json.nonstrict).apply {
-//            // Перечисляем, какие именно варианты у нас могут быть с generic data параметр
-//            register(CommonResponse.serializer(Device.serializer()))
-//        }
-
         return RequestAPI.makeRequest(methodType, settings, POST_DEVICE_API, paramsMap)
     }
 
@@ -66,13 +61,6 @@ object CoreRequestAPI : CoreApiInterface {
     ): CommonResponse<User>? {
         val paramsMap = ArrayList<Pair<String, Any>>()
         paramsMap.add(Pair("AuthDeviceID", authDeviceID))
-
-//        // инициализируем сериализатор под наши нужды
-//        val serializer = KotlinxSerializer(Json.nonstrict).apply {
-//            // Перечисляем, какие именно варианты у нас могут быть с generic data параметр
-//            register(CommonResponse.serializer(User.serializer()))
-//        }
-//        val serializer = RequestAPI.getKotlinxSerializer<User>()
 
         return RequestAPI.makeRequest(methodType, settings, GET_CURRENT_USER_API, paramsMap)
     }
@@ -114,7 +102,20 @@ object CoreRequestAPI : CoreApiInterface {
         params.add(Pair("Login", credentials.email))
         params.add(Pair("Password", credentials.password))
 
-        return RequestAPI.makeRequest(methodType, settings, POST_AUTHORIZATION_DATA, params)
+        return RequestAPI.makeRequest(methodType, settings, PUT_AUTHORIZATION_DATA, params)
 
+    }
+
+    override suspend fun postEmailResendData(
+        deviceID: String,
+        email: String,
+        settings: Settings,
+        methodType: MethodType
+    ): CommonResponse<Device>? {
+        val params = ArrayList<Pair<String, Any>>()
+        params.add(Pair("AuthDeviceID", deviceID))
+        params.add(Pair("Email", email))
+
+        return RequestAPI.makeRequest(methodType, settings, POST_EMAIL_RESEND_DATA, params)
     }
 }

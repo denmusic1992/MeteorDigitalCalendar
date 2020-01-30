@@ -18,11 +18,19 @@ interface RegistrationPresenter {
 
     /**
      * Регистрация пользователя
+     * @param credentials данные для регистрации
      */
     fun registerUser(credentials: RegistrationCredentials)
 
     /**
-     * Авторизация пользователя
+     * Войти пользователю с данными
+     * @param credentials данные для регистрации (здесь используются только поля email и password)
      */
-    fun authorizeUser(credentials: RegistrationCredentials)
+    fun loginUser(credentials: RegistrationCredentials)
+
+    /**
+     * Сбросить пароль
+     * @param credentials данные для регистрации (здесь используется только поле email)
+     */
+    fun emailResendData(credentials: RegistrationCredentials)
 }

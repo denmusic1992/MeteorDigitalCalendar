@@ -15,4 +15,10 @@ interface CommonPresenter {
      * Получить список мероприятий
      */
     fun setEvents()
+
+    /**
+     * Сделать событие с id избранным
+     * @param selectedEvent id события
+     */
+    fun setFavourite(selectedEvent: Int)
 }

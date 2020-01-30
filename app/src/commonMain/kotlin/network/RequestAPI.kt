@@ -16,6 +16,7 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import kotlinx.io.core.use
+import kotlinx.serialization.internal.UnitSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.list
 import models.*
@@ -134,6 +135,7 @@ object RequestAPI {
                 Array<CategoryEvent>::class -> register(CommonResponse.serializer(CategoryEvent.serializer().list))
                 Event::class -> register(CommonResponse.serializer(Event.serializer()))
                 Array<Event>::class -> register(CommonResponse.serializer(Event.serializer().list))
+                Unit::class -> register(CommonResponse.serializer(UnitSerializer))
             }
         }
     }
