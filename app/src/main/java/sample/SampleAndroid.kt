@@ -14,6 +14,7 @@ import interfaces.RegistrationPresenter
 import interfaces.RegistrationViewInterface
 import kotlinx.android.synthetic.main.activity_main.*
 import models.CategoryEvent
+import models.Event
 import models.RegistrationCredentials
 import presenters.CommonPresenterImpl
 import presenters.RegistrationPresenterImpl
@@ -88,8 +89,9 @@ class MainActivity : AppCompatActivity(), CommonViewInterface, RegistrationViewI
         }
     }
 
-    override fun eventsReceived() {
-        MainUtils.longToast(this, "События получены!")
+    override fun eventsReceived(events: ArrayList<Event>?) {
+        if (events != null)
+            MainUtils.longToast(this, "События получены!")
     }
 
     override fun onClick(v: View?) {

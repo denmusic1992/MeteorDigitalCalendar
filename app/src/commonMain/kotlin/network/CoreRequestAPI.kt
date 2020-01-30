@@ -4,8 +4,6 @@ import com.russhwolf.settings.Settings
 import enums.ClientType
 import enums.MethodType
 import interfaces.CoreApiInterface
-import io.ktor.client.features.json.serializer.KotlinxSerializer
-import kotlinx.serialization.json.Json
 import models.CommonResponse
 import models.Device
 import models.RegistrationCredentials
@@ -22,6 +20,7 @@ object CoreRequestAPI : CoreApiInterface {
     private const val POST_DEVICE_API = "core/devices"
     private const val GET_CURRENT_USER_API = "core/users/current"
     private const val POST_REGISTRATION_DATA = "core/users/register"
+    private const val POST_AUTHORIZATION_DATA = "core/users/login"
 
     //endregion
 
@@ -44,12 +43,13 @@ object CoreRequestAPI : CoreApiInterface {
         paramsMap.add(Pair("AuthDeviceID", authDeviceID))
         paramsMap.add(Pair("Client", client.type))
 
-        //инициализируем сериализатор под наши нужды
-        val serializer = KotlinxSerializer(Json.nonstrict).apply {
-            // Перечисляем, какие именно варианты у нас могут быть с generic data параметр
-            register(CommonResponse.serializer(Device.serializer()))
-        }
-        return RequestAPI.makeRequest(methodType, settings, POST_DEVICE_API, paramsMap, serializer)
+//        //инициализируем сериализатор под наши нужды
+//        val serializer = KotlinxSerializer(Json.nonstrict).apply {
+//            // Перечисляем, какие именно варианты у нас могут быть с generic data параметр
+//            register(CommonResponse.serializer(Device.serializer()))
+//        }
+
+        return RequestAPI.makeRequest(methodType, settings, POST_DEVICE_API, paramsMap)
     }
 
     /**
@@ -67,18 +67,14 @@ object CoreRequestAPI : CoreApiInterface {
         val paramsMap = ArrayList<Pair<String, Any>>()
         paramsMap.add(Pair("AuthDeviceID", authDeviceID))
 
-        // инициализируем сериализатор под наши нужды
-        val serializer = KotlinxSerializer(Json.nonstrict).apply {
-            // Перечисляем, какие именно варианты у нас могут быть с generic data параметр
-            register(CommonResponse.serializer(User.serializer()))
-        }
-        return RequestAPI.makeRequest(
-            methodType,
-            settings,
-            GET_CURRENT_USER_API,
-            paramsMap,
-            serializer
-        )
+//        // инициализируем сериализатор под наши нужды
+//        val serializer = KotlinxSerializer(Json.nonstrict).apply {
+//            // Перечисляем, какие именно варианты у нас могут быть с generic data параметр
+//            register(CommonResponse.serializer(User.serializer()))
+//        }
+//        val serializer = RequestAPI.getKotlinxSerializer<User>()
+
+        return RequestAPI.makeRequest(methodType, settings, GET_CURRENT_USER_API, paramsMap)
     }
 
 
@@ -88,6 +84,7 @@ object CoreRequestAPI : CoreApiInterface {
         settings: Settings,
         methodType: MethodType
     ): CommonResponse<User>? {
+        // передаем используемые параметры
         val params = ArrayList<Pair<String, Any>>()
         params.add(Pair("AuthDeviceID", deviceID))
         params.add(Pair("Email", credentials.email))
@@ -96,18 +93,28 @@ object CoreRequestAPI : CoreApiInterface {
         params.add(Pair("Password2", credentials.confirmPassword))
         params.add(Pair("Phone", credentials.phone))
 
-        // инициализируем сериализатор под наши нужды
-        val serializer = KotlinxSerializer(Json.nonstrict).apply {
-            // Перечисляем, какие именно варианты у нас могут быть с generic data параметр
-            register(CommonResponse.serializer(User.serializer()))
-        }
+//        // инициализируем сериализатор под наши нужды
+//        val serializer = KotlinxSerializer(Json.nonstrict).apply {
+//            // Перечисляем, какие именно варианты у нас могут быть с generic data параметр
+//            register(CommonResponse.serializer(User.serializer()))
+//        }
+        //val serializer = RequestAPI.getKotlinxSerializer<>()
 
-        return RequestAPI.makeRequest(
-            methodType,
-            settings,
-            POST_REGISTRATION_DATA,
-            params,
-            serializer
-        )
+        return RequestAPI.makeRequest(methodType, settings, POST_REGISTRATION_DATA, params)
+    }
+
+    override suspend fun postAuthorizationData(
+        deviceID: String,
+        credentials: RegistrationCredentials,
+        settings: Settings,
+        methodType: MethodType
+    ): CommonResponse<User>? {
+        val params = ArrayList<Pair<String, Any>>()
+        params.add(Pair("AuthDeviceID", deviceID))
+        params.add(Pair("Login", credentials.email))
+        params.add(Pair("Password", credentials.password))
+
+        return RequestAPI.makeRequest(methodType, settings, POST_AUTHORIZATION_DATA, params)
+
     }
 }

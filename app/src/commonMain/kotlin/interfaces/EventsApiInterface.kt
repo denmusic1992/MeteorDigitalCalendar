@@ -19,7 +19,7 @@ interface EventsApiInterface {
         authDeviceID: String,
         settings: Settings,
         methodType: MethodType = MethodType.GET
-    ): CommonResponse<ArrayList<CategoryEvent>>?
+    ): CommonResponse<Array<CategoryEvent>>?
 
     /**
      * Метод получения event
@@ -34,5 +34,5 @@ interface EventsApiInterface {
         filter: Filter,
         settings: Settings,
         methodType: MethodType = MethodType.GET
-    ): CommonResponse<ArrayList<Event>>?
+    ): CommonResponse<Array<Event>>?
 }

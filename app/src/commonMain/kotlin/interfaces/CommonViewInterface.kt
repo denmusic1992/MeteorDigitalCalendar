@@ -1,6 +1,7 @@
 package interfaces
 
 import models.CategoryEvent
+import models.Event
 
 /**
  * Интерфейс для взаимодействия CommonPresenter и View
@@ -15,5 +16,5 @@ interface CommonViewInterface {
     /**
      * Результат при получении мероприятий с сервера
      */
-    fun eventsReceived()
+    fun eventsReceived(events: ArrayList<Event>?)
 }

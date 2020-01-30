@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import models.CategoryEvent
 import models.Event
 import models.Filter
 import network.EventsRequestAPI
@@ -39,11 +40,18 @@ class CommonPresenterImpl(
         val deviceID = Storage.getDeviceID(settings)
         launch {
             val response = EventsRequestAPI.getCategories(deviceID, settings)
-            if (response?.data != null) {
+            if(response != null && response.code == ResponseCode.Ok.code) {
+                val categories = response.data as ArrayList<CategoryEvent>?
+                if(categories != null)
+                    withContext(Dispatchers.Main) {
+                        // Добавляем теги в фильтр, по умолчанию все выбраны изначально
+                        filter.categories = categories
+                        commonView.categoriesReceived(response.data)
+                    }
+            }
+            else {
                 withContext(Dispatchers.Main) {
-                    // Добавляем теги в фильтр, по умолчанию все выбраны изначально
-                    filter.categories = response.data
-                    commonView.categoriesReceived(response.data)
+                    commonView.categoriesReceived(null)
                 }
             }
         }
@@ -61,12 +69,13 @@ class CommonPresenterImpl(
             if(eventsData != null) {
                 when(eventsData.code) {
                     ResponseCode.Ok.code -> {
-                        events = eventsData.data
+                        events = eventsData.data as ArrayList<Event>?
+                        commonView.eventsReceived(events)
                     }
                 }
             }
             withContext(Dispatchers.Main) {
-                commonView.eventsReceived()
+                commonView.eventsReceived(null)
             }
         }
     }

@@ -16,12 +16,15 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import kotlinx.io.core.use
-import models.CommonResponse
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.list
+import models.*
 
 /**
  * Класс, работающий с подключением к серверу
  */
 // TODO: Не вижу смысла в обращении по интерфейсу, но пока оставим так
+@Suppress("EXPERIMENTAL_API_USAGE")
 object RequestAPI {
 
     //region url staff
@@ -56,20 +59,21 @@ object RequestAPI {
      * @param settings настройки для данных key-value
      * @param url адрес запроса к API (без указания базового адреса)
      * @param params список параметров запроса (пришлось переделать в list pair, т.к. передаем массивы)
-     * @param kotlinxSerializer json парсер данных с сервера
      * @param T тип объекта, который ждем при отклике с сервера
      */
-    internal suspend fun <T> makeRequest(
+    internal suspend inline fun <reified T> makeRequest(
         method: MethodType,
         settings: Settings,
         url: String,
-        params: ArrayList<Pair<String, Any>>,
-        kotlinxSerializer: KotlinxSerializer
+        params: ArrayList<Pair<String, Any>>
     ): CommonResponse<T>? {
         // Здесь выбираем тип запроса
         var data: CommonResponse<T>? = null
 
-        val client = getHttpClient(kotlinxSerializer)
+        // здесь умный метод получения сериализатора
+        // решился на это, потому что надоело в каждом методе запроса писать одно и то же
+        // по добавлению сериализатора
+        val client = getHttpClient(getKotlinxSerializer<T>())
         // TODO: Здесь надо дождаться ответа с GitHub, как правильно сделать подключение сериализации
         when (method) {
             MethodType.GET -> {
@@ -112,6 +116,26 @@ object RequestAPI {
             }
         }
         return data
+    }
+
+    /**
+     * Получить сериализатор для http клиента
+     * @param T json, описанный в моделях для запроса
+     * TODO: надо подумать, оставить так или же лучше переделать
+     */
+    internal inline fun <reified T> getKotlinxSerializer(): KotlinxSerializer {
+        // инициализируем сериализатор под наши нужды
+        return KotlinxSerializer(Json.nonstrict).apply {
+            // Перечисляем, какие именно варианты у нас могут быть с generic data параметр
+            when (T::class) {
+                User::class -> register(CommonResponse.serializer(User.serializer()))
+                Device::class -> register(CommonResponse.serializer(Device.serializer()))
+                CategoryEvent::class -> register(CommonResponse.serializer(CategoryEvent.serializer()))
+                Array<CategoryEvent>::class -> register(CommonResponse.serializer(CategoryEvent.serializer().list))
+                Event::class -> register(CommonResponse.serializer(Event.serializer()))
+                Array<Event>::class -> register(CommonResponse.serializer(Event.serializer().list))
+            }
+        }
     }
 
     /**

@@ -3,10 +3,10 @@ package network
 import com.russhwolf.settings.Settings
 import enums.MethodType
 import interfaces.EventsApiInterface
-import io.ktor.client.features.json.serializer.KotlinxSerializer
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.list
-import models.*
+import models.CategoryEvent
+import models.CommonResponse
+import models.Event
+import models.Filter
 
 /**
  * Класс описывающий логику подключения к методам api из Events
@@ -28,18 +28,18 @@ object EventsRequestAPI : EventsApiInterface {
         authDeviceID: String,
         settings: Settings,
         methodType: MethodType
-    ): CommonResponse<ArrayList<CategoryEvent>>? {
+    ): CommonResponse<Array<CategoryEvent>>? {
         // Собираем в кучу параметры
         val params = ArrayList<Pair<String, Any>>()
         params.add(Pair("AuthDeviceID", authDeviceID))
 
-        // инициализируем сериализатор под наши нужды
-        val serializer = KotlinxSerializer(Json.nonstrict).apply {
-            // Регистрируем список тегов
-            register(CommonResponse.serializer(CategoryEvent.serializer().list))
-        }
+//        // инициализируем сериализатор под наши нужды
+//        val serializer = KotlinxSerializer(Json.nonstrict).apply {
+//            // Регистрируем список тегов
+//            register(CommonResponse.serializer(CategoryEvent.serializer().list))
+//        }
 
-        return RequestAPI.makeRequest(methodType, settings, GET_CATEGORIES_API, params, serializer)
+        return RequestAPI.makeRequest(methodType, settings, GET_CATEGORIES_API, params)
     }
 
     /**
@@ -50,7 +50,7 @@ object EventsRequestAPI : EventsApiInterface {
         filter: Filter,
         settings: Settings,
         methodType: MethodType
-    ): CommonResponse<ArrayList<Event>>? {
+    ): CommonResponse<Array<Event>>? {
         // Заполняем переменные для доступа к API
         val params = ArrayList<Pair<String, Any>>()
         params.add(Pair("AuthDeviceID", deviceID))
@@ -67,12 +67,12 @@ object EventsRequestAPI : EventsApiInterface {
         params.add(Pair("Favourite", filter.isFavourite))
         params.add(Pair("Price", filter.selectedPrice))
 
-        // инициализируем сериализатор под наши нужды
-        val serializer = KotlinxSerializer(Json.nonstrict).apply {
-            // Регистрируем список тегов
-            register(CommonResponse.serializer(Event.serializer().list))
-        }
+//        // инициализируем сериализатор под наши нужды
+//        val serializer = KotlinxSerializer(Json.nonstrict).apply {
+//            // Регистрируем список тегов
+//            register(CommonResponse.serializer(Event.serializer().list))
+//        }
 
-        return RequestAPI.makeRequest(methodType, settings, GET_EVENTS_API, params, serializer)
+        return RequestAPI.makeRequest(methodType, settings, GET_EVENTS_API, params)
     }
 }

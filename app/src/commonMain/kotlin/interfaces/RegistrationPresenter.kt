@@ -20,4 +20,9 @@ interface RegistrationPresenter {
      * Регистрация пользователя
      */
     fun registerUser(credentials: RegistrationCredentials)
+
+    /**
+     * Авторизация пользователя
+     */
+    fun authorizeUser(credentials: RegistrationCredentials)
 }

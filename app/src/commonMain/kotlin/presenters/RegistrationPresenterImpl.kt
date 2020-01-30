@@ -103,6 +103,10 @@ class RegistrationPresenterImpl(
         }
     }
 
+    override fun authorizeUser(credentials: RegistrationCredentials) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     /**
      * Метод регистрации пользователя в системе
      */
