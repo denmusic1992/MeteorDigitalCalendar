@@ -50,7 +50,9 @@ kotlin {
 
         iosX64("ios") {
             binaries {
-                framework()
+                framework {
+                    export "com.russhwolf:multiplatform-settings:$rootProject.kotlinSharedVer"
+                }
             }
         }
 
@@ -73,7 +75,7 @@ kotlin {
                 // serialization
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$rootProject.kotlinSerializationVer")
                 // key-value
-                implementation("com.russhwolf:multiplatform-settings:$rootProject.kotlinSharedVer")
+                api "com.russhwolf:multiplatform-settings:$rootProject.kotlinSharedVer"
                 // uuid
                 implementation("com.benasher44:uuid:$rootProject.uuidVer")
                 // md5

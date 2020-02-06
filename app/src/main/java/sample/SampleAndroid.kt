@@ -124,17 +124,17 @@ class MainActivity : AppCompatActivity(), CommonViewInterface, RegistrationViewI
 //                val credentials = RegistrationCredentials("qwerty@asdf.rr", "2323", "2323","", "2222222222")
 //                val credentials = RegistrationCredentials("qwerty@asdf.rr", "2323", "2323","test1", "222222222")
                 val credentials = RegistrationCredentials(
-                    "232qwerty@asddf.rr",
+                    "2322qwerty@asddf.rr",
                     "2323",
                     "2323",
                     "test1",
-                    "2222222222"
+                    "2222222223"
                 )
                 registrationPresenter.registerUser(credentials)
             }
             R.id.btnAuthorize -> {
                 val credentials =
-                    RegistrationCredentials(email = "232qwerty@asddf.rr", password = "2323")
+                    RegistrationCredentials(email = "2322qwerty@asddf.rr", password = "2323")
                 registrationPresenter.loginUser(credentials)
             }
             R.id.btnResend -> {
@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity(), CommonViewInterface, RegistrationViewI
                 registrationPresenter.emailResendData(credentials)
             }
             R.id.btnFavourite -> {
-                val eventId = 0
+                val eventId = 1
                 commonPresenter.setFavourite(eventId)
             }
             else -> return

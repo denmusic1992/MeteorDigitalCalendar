@@ -8,13 +8,13 @@ import helpers.Storage
 import interfaces.CoroutinePresenter
 import interfaces.RegistrationPresenter
 import interfaces.RegistrationViewInterface
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import models.RegistrationCredentials
 import models.User
 import network.CoreRequestAPI
+import network.CoroutineDispatchers
 
 /**
  * Презентер для работы с регистрацией устройства и пользователя
@@ -42,7 +42,7 @@ class RegistrationPresenterImpl(
         if (Storage.getPrivateKey(settings) == null) {
             val deviceID = Storage.getDeviceID(settings)
             // Отправляем запрос на сервер
-            launch {
+            launch(CoroutineDispatchers.Background) {
                 val data = CoreRequestAPI.postDeviceID(deviceID, ClientType.Android, settings)
                 // Если получили ответ с сервера, разбираем его
                 // получили отклик
@@ -51,20 +51,20 @@ class RegistrationPresenterImpl(
                     when (data.code) {
                         ResponseCode.Created.code -> {
                             Storage.setPrivateKey(settings, data.data!!.privateKey)
-                            withContext(Dispatchers.Main) {
+                            withContext(CoroutineDispatchers.Main) {
                                 registrationView.registerResult(true, data.data.toString())
                             }
                         }
                         // Иначе передаем ошибку в вызывающий класс
                         else -> {
-                            withContext(Dispatchers.Main) {
+                            withContext(CoroutineDispatchers.Main) {
                                 registrationView.registerResult(false, data.errorList.toString())
                             }
                         }
                     }
                 } else
                 // Здесь то же самое, передаем ошибку
-                    withContext(Dispatchers.Main) {
+                    withContext(CoroutineDispatchers.Main) {
                         registrationView.registerResult(false, "Unable to get data, null!")
                     }
             }
@@ -85,17 +85,17 @@ class RegistrationPresenterImpl(
         // Если есть такой, то говорим серверу, что логинется такой то пользователь
         if (currentUser != null) {
             val deviceID = Storage.getDeviceID(settings)
-            launch {
+            launch(CoroutineDispatchers.Background) {
                 val user = CoreRequestAPI.getCurrentUser(deviceID, settings)
                 if (user?.data != null && user.data.userId == currentUser?.userId) {
                     Storage.setCurrentUser(settings, user.data)
                     currentUser = user.data
-                    withContext(Dispatchers.Main) {
+                    withContext(CoroutineDispatchers.Main) {
                         registrationView.authorizationResult(true, user.data.toString())
                     }
                 } else {
                     Storage.removeCurrentUser(settings)
-                    withContext(Dispatchers.Main) {
+                    withContext(CoroutineDispatchers.Main) {
                         registrationView.authorizationResult(false, "Пользователь удален!")
                     }
                 }
@@ -111,7 +111,7 @@ class RegistrationPresenterImpl(
     override fun loginUser(credentials: RegistrationCredentials) {
         // проверяем, может ли пользователь логиниться
         if (credentials.canTryLogin()) {
-            launch {
+            launch(CoroutineDispatchers.Background) {
                 // отправляем запрос
                 val deviceID = Storage.getDeviceID(settings)
                 val authorization =
@@ -122,7 +122,7 @@ class RegistrationPresenterImpl(
                         ResponseCode.Created.code -> {
                             // Если есть такой пользователь, то записываем его в память устройства
                             Storage.setCurrentUser(settings, authorization.data!!)
-                            withContext(Dispatchers.Main) {
+                            withContext(CoroutineDispatchers.Main) {
                                 registrationView.authorizationResult(
                                     true,
                                     "Поздравляю, вы авторизованы!"
@@ -131,7 +131,7 @@ class RegistrationPresenterImpl(
                         }
                         // Если ошибки, то передаем их
                         ResponseCode.BadRequest.code -> {
-                            withContext(Dispatchers.Main) {
+                            withContext(CoroutineDispatchers.Main) {
                                 registrationView.authorizationResult(
                                     false,
                                     authorization.errorList.toString()
@@ -139,7 +139,7 @@ class RegistrationPresenterImpl(
                             }
                         }
                         else -> {
-                            withContext(Dispatchers.Main) {
+                            withContext(CoroutineDispatchers.Main) {
                                 registrationView.authorizationResult(
                                     false,
                                     "Данные введены некорректно! Проверьте поля ввода!"
@@ -170,7 +170,7 @@ class RegistrationPresenterImpl(
 
         //если email введен правильно, то продолжаем
         if (credentials.isEmailValid()) {
-            launch {
+            launch(CoroutineDispatchers.Background) {
                 val deviceID = Storage.getDeviceID(settings)
                 val resend =
                     CoreRequestAPI.postEmailResendData(deviceID, credentials.email, settings)
@@ -178,27 +178,29 @@ class RegistrationPresenterImpl(
                     // ответ есть, значит смотрим код
                     when (resend.code) {
                         ResponseCode.Created.code -> {
-                            withContext(Dispatchers.Main) {
+                            withContext(CoroutineDispatchers.Main) {
                                 registrationView.resendEmailResult(true)
                             }
                         }
                         ResponseCode.BadRequest.code -> {
-                            withContext(Dispatchers.Main) {
+                            withContext(CoroutineDispatchers.Main) {
                                 registrationView.resendEmailResult(
                                     true,
-                                    "Пользователь с указанным e-mail не найден")
+                                    "Пользователь с указанным e-mail не найден"
+                                )
                             }
                         }
                         else -> {
-                            withContext(Dispatchers.Main) {
+                            withContext(CoroutineDispatchers.Main) {
                                 registrationView.resendEmailResult(
                                     true,
-                                    "Часть полей заполнена некорректно")
+                                    "Часть полей заполнена некорректно"
+                                )
                             }
                         }
                     }
                 } else {
-                    withContext(Dispatchers.Main) {
+                    withContext(CoroutineDispatchers.Main) {
                         registrationView.resendEmailResult(
                             false,
                             "Ошибка при связи с сервером"
@@ -234,7 +236,7 @@ class RegistrationPresenterImpl(
         if (errors.size > 0) {
             registrationView.registrationResult(false, errors)
         } else {
-            launch {
+            launch(CoroutineDispatchers.Background) {
                 val deviceID = Storage.getDeviceID(settings)
                 val registrationData =
                     CoreRequestAPI.postRegistrationData(deviceID, credentials, settings)
@@ -244,12 +246,12 @@ class RegistrationPresenterImpl(
                         ResponseCode.Created.code -> {
                             currentUser = registrationData.data
                             Storage.setCurrentUser(settings, currentUser!!)
-                            withContext(Dispatchers.Main) {
+                            withContext(CoroutineDispatchers.Main) {
                                 registrationView.registrationResult(true)
                             }
                         }
                         ResponseCode.BadRequest.code -> {
-                            withContext(Dispatchers.Main) {
+                            withContext(CoroutineDispatchers.Main) {
                                 registrationView.registrationResult(
                                     false,
                                     arrayListOf(RegisterError.RegistrationError),
@@ -258,7 +260,7 @@ class RegistrationPresenterImpl(
                             }
                         }
                         else -> {
-                            withContext(Dispatchers.Main) {
+                            withContext(CoroutineDispatchers.Main) {
                                 registrationView.registrationResult(
                                     false,
                                     arrayListOf(RegisterError.RegistrationError),
