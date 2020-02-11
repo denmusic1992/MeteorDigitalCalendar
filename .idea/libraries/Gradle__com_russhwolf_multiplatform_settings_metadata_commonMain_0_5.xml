@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="Gradle: com.russhwolf:multiplatform-settings-metadata:0.5" type="kotlin.common">
+  <library name="Gradle: com.russhwolf:multiplatform-settings-metadata:commonMain:0.5" type="kotlin.common">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.russhwolf/multiplatform-settings-metadata/0.5/b3078f3e99b306028ab42ba4fd9170611977037b/multiplatform-settings-metadata-0.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/app/build/tmp/kotlinMetadata/iosTest/implementation/com.russhwolf-multiplatform-settings-metadata-0.5/com.russhwolf-multiplatform-settings-metadata-0.5-commonMain.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
