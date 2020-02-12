@@ -52,6 +52,7 @@ kotlin {
             binaries {
                 framework {
                     export "com.russhwolf:multiplatform-settings:$rootProject.kotlinSharedVer"
+                    transitiveExport = true
                 }
             }
         }
